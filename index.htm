@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acessar Câmera</title>
+    <style>
+        #myvideo {
+            width: 100%;
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <video id="myvideo" autoplay playsinline muted></video>
+    <button id="mybtn">Acessar Webcam</button>
+
+    <script>
+        // Seleciona os elementos
+        const video = document.getElementById('myvideo');
+        const myBtn = document.getElementById('mybtn');
+
+        // Função para iniciar a câmera ao clicar no botão
+        myBtn.addEventListener('click', () => {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Seu navegador não suporta este recurso.');
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch((error) => {
+                    console.error('Erro ao acessar a webcam:', error);
+                    alert('Não foi possível acessar a câmera.');
+                });
+        });
+    </script>
+</body>
+</html>
