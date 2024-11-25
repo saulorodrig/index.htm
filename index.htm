@@ -5,14 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acessar Câmera</title>
     <style>
+        /* O vídeo ocupará toda a largura e altura da tela */
         #myvideo {
-            width:500%;
-            height: 100px;
+            width: 100vw; /* 100% da largura da viewport */
+            height: 100vh; /* 100% da altura da viewport */
+            object-fit: cover; /* Ajusta para cobrir toda a área */
+            background: black; /* Fundo para caso o vídeo demore a carregar */
+        }
+        button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+    <!-- O vídeo será exibido aqui -->
     <video id="myvideo" autoplay playsinline muted></video>
+    <!-- Botão para iniciar a câmera -->
     <button id="mybtn">Acessar Webcam</button>
 
     <script>
@@ -29,8 +47,9 @@
 
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then((stream) => {
-                    video.srcObject = stream;
+                    video.srcObject = stream; // Exibe o stream da câmera no <video>
                     video.play();
+                    myBtn.style.display = 'none'; // Esconde o botão após acessar a câmera
                 })
                 .catch((error) => {
                     console.error('Erro ao acessar a webcam:', error);
