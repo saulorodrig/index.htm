@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>Visualizador de Transmissão</h1>
+    <h1>Visualizando a Transmissão</h1>
     <video id="video" autoplay playsinline></video>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -25,6 +25,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const roomID = urlParams.get('room');
 
+        // Conecta-se ao servidor como espectador
         socket.emit('watcher', roomID);
 
         // Recebe a oferta de conexão do host
