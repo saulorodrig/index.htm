@@ -1,26 +1,36 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solzeira</title>
-    <style>
-        #myvideo {
-            width: 100%;
-            height: 60vh;
-            background: black;
-        }
-    </style>
+    <title>Página de Transmissão</title>
 </head>
 <body>
-    <h1>Compartilhar Câmera</h1>
-    <video id="myvideo" autoplay playsinline muted></video>
-    <button id="start-btn">Iniciar Transmissão</button>
-    <p>Link para os espectadores:</p>
-    <input id="viewer-link" readonly style="width: 100%;">
+    <h1>Bem-vindo à página de Transmissão</h1>
+    <button id="startButton">Iniciar Transmissão</button>
+    <div id="viewerLinkContainer" style="display:none;">
+        <p>Compartilhe este link com os espectadores:</p>
+        <a id="viewerLink" href="" target="_blank">Link para Espectador</a>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="configsolzeira.js"></script>
+    <script>
+        const socket = io("https://index-htm-6c6r.vercel.app");
+        const startButton = document.getElementById("startButton");
+        const viewerLinkContainer = document.getElementById("viewerLinkContainer");
+        const viewerLink = document.getElementById("viewerLink");
+
+        startButton.addEventListener("click", () => {
+            // Gera um ID único para a sala (pode ser um UUID ou um identificador gerado aleatoriamente)
+            const roomID = Math.random().toString(36).substring(2, 10);
+            
+            // Inicia a transmissão e avisa ao servidor que o host está pronto
+            socket.emit('host-ready', roomID);
+            
+            // Exibe o link para os espectadores
+            viewerLinkContainer.style.display = 'block';
+            viewerLink.href = `configeespectador.js?room=${roomID}`;
+        });
+    </script>
 </body>
 </html>
