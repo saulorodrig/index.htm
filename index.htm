@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transmissão ao Vivo</title>
+    <title>Iniciar Transmissão</title>
     <style>
         video {
             width: 100%;
@@ -26,47 +26,55 @@
         const viewerLink = document.getElementById('viewer-link');
         const socket = io("https://index-htm-6c6r.vercel.app"); // URL do servidor WebSocket
 
-        // Função para acessar a câmera do usuário e iniciar a transmissão
-        startButton.addEventListener('click', async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream; // Exibe o vídeo da câmera na página de transmissão
+        startButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
 
-                // Emite o evento 'host-ready' para indicar que a transmissão está pronta
-                socket.emit('host-ready');
+                    // Gera o link único para os espectadores
+                    const viewerRoomLink = window.location.href + "?room=" + generateRoomID();
+                    viewerLink.value = viewerRoomLink; // Exibe o link gerado para os espectadores
+                    viewerLink.style.color = "blue";
+                    viewerLink.style.border = "1px solid blue";
 
-                // Gera um link único para os espectadores
-                const roomID = generateRoomID();
-                const viewerUrl = `${window.location.origin}/espectadrosolzeira.html?room=${roomID}`;
-                viewerLink.value = viewerUrl; // Exibe o link para os espectadores
+                    // Inicia a transmissão e envia o evento 'host-ready'
+                    socket.emit('host-ready');
 
-                // Emite o evento de 'watcher' para os espectadores se conectarem
-                socket.on('watcher', (id) => {
-                    const peerConnection = new RTCPeerConnection();
-                    peerConnection.addStream(stream); // Adiciona o stream à conexão de peers
+                    socket.on('watcher', id => {
+                        const peerConnection = new RTCPeerConnection({
+                            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+                        });
 
-                    peerConnection.onicecandidate = (event) => {
-                        if (event.candidate) {
-                            socket.emit('candidate', id, event.candidate);
-                        }
-                    };
+                        peerConnection.addStream(stream);
 
-                    peerConnection.createOffer().then((offer) => {
-                        return peerConnection.setLocalDescription(offer);
-                    }).then(() => {
-                        socket.emit('offer', id, peerConnection.localDescription);
+                        peerConnection.onicecandidate = event => {
+                            if (event.candidate) {
+                                socket.emit('candidate', id, event.candidate);
+                            }
+                        };
+
+                        peerConnection.createOffer()
+                            .then(sdp => peerConnection.setLocalDescription(sdp))
+                            .then(() => socket.emit('offer', id, peerConnection.localDescription));
                     });
-                });
 
-            } catch (error) {
-                console.error('Erro ao acessar a câmera: ', error);
-                alert('Não foi possível acessar a câmera.');
-            }
+                    socket.on('candidate', (id, candidate) => {
+                        peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
+                    });
+
+                    socket.on('disconnectPeer', id => {
+                        peerConnections[id] && peerConnections[id].close();
+                        delete peerConnections[id];
+                    });
+                })
+                .catch((error) => {
+                    console.error('Erro ao acessar a câmera: ', error);
+                    alert('Não foi possível acessar a câmera.');
+                });
         });
 
-        // Função para gerar um ID único para a sala
         function generateRoomID() {
-            return Math.random().toString(36).substr(2, 9); // Gera um ID aleatório
+            return Math.random().toString(36).substr(2, 9); // Gera um ID aleatório para a sala
         }
     </script>
 </body>
