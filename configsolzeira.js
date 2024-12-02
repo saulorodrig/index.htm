@@ -9,7 +9,7 @@ const config = {
 };
 
 // Conecta ao servidor WebSocket
-const socket = io('https://seuprojeto.vercel.app/api/socket'); // https://index-htm-h7an.vercel.app
+const socket = io("https://index-htm-6c6r.vercel.app");
 
 // Inicia a câmera e compartilha o vídeo
 startButton.addEventListener('click', async () => {
