@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live com Chat</title>
-    <link rel="stylesheet" href="livecam.css">
+    <title>Solzeira</title>
+    <style>
+        #myvideo {
+            width: 100%;
+            height: 60vh;
+            background: black;
+        }
+    </style>
 </head>
 <body>
+    <h1>Compartilhar Câmera</h1>
     <video id="myvideo" autoplay playsinline muted></video>
-    <button id="mybtn">Acessar Webcam</button>
+    <button id="start-btn">Iniciar Transmissão</button>
+    <p>Link para os espectadores:</p>
+    <input id="viewer-link" readonly style="width: 100%;">
 
-    <!-- Contêiner do chat -->
-    <div class="chat-container">
-        <div class="chat-area" id="chat-area">
-            <!-- Mensagens aparecerão aqui -->
-        </div>
-        <div class="controls">
-            <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
-            <button id="send-btn">Enviar</button>
-            <span class="emoji-picker" id="emoji-btn">😊</span>
-            <button class="present-btn" id="present-btn">🎁 Enviar Presente</button>
-        </div>
-    </div>
-
-    <script src="scriptlivecam.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="configsolzeira.js"></script>
 </body>
 </html>
