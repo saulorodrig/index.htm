@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,10 +25,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const roomID = urlParams.get('room'); // ID da sala vindo da URL
 
-        // Verifica se o ID da sala está presente na URL
         if (!roomID) {
-            alert('Sala não encontrada!');
-            window.location.href = '/'; // Redireciona para a página inicial se o ID da sala não existir
+            alert('Erro: Sala não encontrada!');
+            window.location.href = '/'; // Redireciona para a página inicial se não houver sala
         }
 
         // Emite o evento de espectador ao servidor
@@ -47,7 +46,7 @@
             };
 
             peerConnection.ontrack = (event) => {
-                video.srcObject = event.streams[0]; // Exibe o vídeo do host no espectador
+                video.srcObject = event.streams[0]; // Exibe o vídeo do host
             };
 
             peerConnection.createAnswer()
