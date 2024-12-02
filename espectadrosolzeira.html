@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espectador</title>
+    <style>
+        #remoteVideo {
+            width: 100%;
+            height: 60vh;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Assistir à Transmissão</h1>
+    <video id="remoteVideo" autoplay playsinline></video>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="configespectador.js"></script>
+</body>
+</html>
