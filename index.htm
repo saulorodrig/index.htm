@@ -3,33 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Transmissão</title>
+    <title>Transmissão ao Vivo</title>
+    <style>
+        #video {
+            width: 100%;
+            height: 60vh;
+            background: black;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bem-vindo à página de Transmissão</h1>
-    <button id="startButton">Iniciar Transmissão</button>
-    <div id="viewerLinkContainer" style="display:none;">
-        <p>Compartilhe este link com os espectadores:</p>
-        <a id="viewerLink" href="" target="_blank">Link para Espectador</a>
-    </div>
+    <h1>Iniciar Transmissão</h1>
+    <video id="video" autoplay playsinline></video>
+    <button id="start-btn">Iniciar Transmissão</button>
+
+    <h2>Link para Espectadores</h2>
+    <input id="viewer-link" type="text" readonly />
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io("https://index-htm-6c6r.vercel.app");
-        const startButton = document.getElementById("startButton");
-        const viewerLinkContainer = document.getElementById("viewerLinkContainer");
-        const viewerLink = document.getElementById("viewerLink");
+        const video = document.getElementById('video');
+        const startButton = document.getElementById('start-btn');
+        const viewerLink = document.getElementById('viewer-link');
+        const socket = io("https://index-htm-6c6r.vercel.app"); // URL do seu servidor WebSocket
 
-        startButton.addEventListener("click", () => {
-            // Gera um ID único para a sala (pode ser um UUID ou um identificador gerado aleatoriamente)
-            const roomID = Math.random().toString(36).substring(2, 10);
-            
-            // Inicia a transmissão e avisa ao servidor que o host está pronto
+        // Função para gerar ID único para a sala de transmissão
+        function generateRoomID() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // Quando o botão de iniciar a transmissão for clicado
+        startButton.addEventListener('click', async () => {
+            // Acessa a câmera
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+
+            // Gera o link único para o espectador
+            const roomID = generateRoomID();
+            const viewerRoomLink = `${window.location.origin}/configeespectador.html?room=${roomID}`;
+            viewerLink.value = viewerRoomLink;
+
+            // Inicia a comunicação com o servidor WebSocket
             socket.emit('host-ready', roomID);
-            
-            // Exibe o link para os espectadores
-            viewerLinkContainer.style.display = 'block';
-            viewerLink.href = `configeespectador.js?room=${roomID}`;
+
+            // Envia a transmissão para os espectadores
+            socket.on('watcher', (id) => {
+                const peerConnection = new RTCPeerConnection();
+                peerConnection.addTrack(stream.getTracks()[0], stream);
+
+                // ICE Candidate (candidatos de rede)
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        socket.emit('candidate', id, event.candidate);
+                    }
+                };
+
+                // Envia a oferta de conexão
+                peerConnection.createOffer()
+                    .then(sdp => peerConnection.setLocalDescription(sdp))
+                    .then(() => socket.emit('offer', id, peerConnection.localDescription));
+            });
+
+            // Envia a oferta para os espectadores
+            socket.emit('host-ready', roomID);
+        });
+
+        // Lida com o ICE Candidate
+        socket.on('candidate', (id, candidate) => {
+            // Implementar a recepção do candidate ICE se necessário
         });
     </script>
 </body>
