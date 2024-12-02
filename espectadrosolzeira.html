@@ -13,34 +13,41 @@
     </style>
 </head>
 <body>
-    <h1>Visualizando a Transmissão</h1>
+    <h1>Visualizando Transmissão</h1>
     <video id="video" autoplay playsinline></video>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const video = document.getElementById('video');
-        const socket = io("https://index-htm-6c6r.vercel.app");
+        const socket = io("https://index-htm-6c6r.vercel.app"); // URL do servidor WebSocket
 
         // Captura o ID da sala (room) dos parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
-        const roomID = urlParams.get('room');
+        const roomID = urlParams.get('room'); // ID da sala vindo da URL
 
-        // Conecta-se ao servidor como espectador
+        // Verifica se o ID da sala está presente na URL
+        if (!roomID) {
+            alert('Sala não encontrada!');
+            window.location.href = '/'; // Redireciona para a página inicial se o ID da sala não existir
+        }
+
+        // Emite o evento de espectador ao servidor
         socket.emit('watcher', roomID);
 
         // Recebe a oferta de conexão do host
         socket.on('offer', (id, description) => {
             const peerConnection = new RTCPeerConnection();
+
             peerConnection.setRemoteDescription(new RTCSessionDescription(description));
 
-            peerConnection.onicecandidate = event => {
+            peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
                     socket.emit('candidate', id, event.candidate);
                 }
             };
 
-            peerConnection.ontrack = event => {
-                video.srcObject = event.streams[0]; // Exibe o vídeo do host
+            peerConnection.ontrack = (event) => {
+                video.srcObject = event.streams[0]; // Exibe o vídeo do host no espectador
             };
 
             peerConnection.createAnswer()
