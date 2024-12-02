@@ -3,59 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acessar Câmera</title>
-    <style>
-        /* O vídeo ocupará toda a largura e altura da tela */
-        #myvideo {
-            width: 100vw; /* 100% da largura da viewport */
-            height: 100vh; /* 100% da altura da viewport */
-            object-fit: cover; /* Ajusta para cobrir toda a área */
-            background: black; /* Fundo para caso o vídeo demore a carregar */
-        }
-        button {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+    <title>Live com Chat</title>
+    <link rel="stylesheet" href="livecam.css">
 </head>
 <body>
-    <!-- O vídeo será exibido aqui -->
     <video id="myvideo" autoplay playsinline muted></video>
-    <!-- Botão para iniciar a câmera -->
     <button id="mybtn">Acessar Webcam</button>
 
-    <script>
-        // Seleciona os elementos
-        const video = document.getElementById('myvideo');
-        const myBtn = document.getElementById('mybtn');
+    <!-- Contêiner do chat -->
+    <div class="chat-container">
+        <div class="chat-area" id="chat-area">
+            <!-- Mensagens aparecerão aqui -->
+        </div>
+        <div class="controls">
+            <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
+            <button id="send-btn">Enviar</button>
+            <span class="emoji-picker" id="emoji-btn">😊</span>
+            <button class="present-btn" id="present-btn">🎁 Enviar Presente</button>
+        </div>
+    </div>
 
-        // Função para iniciar a câmera ao clicar no botão
-        myBtn.addEventListener('click', () => {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('Seu navegador não suporta este recurso.');
-                return;
-            }
-
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then((stream) => {
-                    video.srcObject = stream; // Exibe o stream da câmera no <video>
-                    video.play();
-                    myBtn.style.display = 'none'; // Esconde o botão após acessar a câmera
-                })
-                .catch((error) => {
-                    console.error('Erro ao acessar a webcam:', error);
-                    alert('Não foi possível acessar a câmera.');
-                });
-        });
-    </script>
+    <script src="scriptlivecam.js"></script>
 </body>
 </html>
+
+ width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    background: black;
+}
+button, input, .chat-area, .controls {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+.chat-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+}
+.chat-area {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.controls {
+    display: flex;
+    gap: 10px;
+}
+input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.emoji-picker, .present-btn {
+    cursor: pointer;
+}
+const video = document.getElementById('myvideo');
+const myBtn = document.getElementById('mybtn');
+const chatArea = document.getElementById('chat-area');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const emojiBtn = document.getElementById('emoji-btn');
+const presentBtn = document.getElementById('present-btn');
+
+myBtn.addEventListener('click', () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Seu navegador não suporta este recurso.');
+        return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
+            myBtn.style.display = 'none';
+        })
+        .catch((error) => {
+            console.error('Erro ao acessar a webcam:', error);
+            alert('Não foi possível acessar a câmera.');
+        });
+});
+
+sendBtn.addEventListener('click', () => {
+    const message = chatInput.value.trim();
+    if (message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        chatArea.appendChild(messageElement);
+        chatInput.value = '';
+        chatArea.scrollTop = chatArea.scrollHeight; // Rola para a última mensagem
+    }
+});
+
+emojiBtn.addEventListener('click', () => {
+    chatInput.value += '😊'; // Adiciona emoji no campo de texto
+    chatInput.focus();
+});
+
+presentBtn.addEventListener('click', () => {
+    const presentMessage = document.createElement('div');
+    presentMessage.textContent = '🎁 Alguém enviou um presente!';
+    presentMessage.style.color = 'gold';
+    chatArea.appendChild(presentMessage);
+    chatArea.scrollTop = chatArea.scrollHeight;
+});
