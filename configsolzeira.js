@@ -1,3 +1,15 @@
+document.getElementById('start-btn').addEventListener('click', () => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            const video = document.getElementById('myvideo');
+            video.srcObject = stream; // Exibe o vídeo da câmera na página
+        })
+        .catch((error) => {
+            console.error('Erro ao acessar a câmera: ', error);
+            alert('Não foi possível acessar a câmera.');
+        });
+});
+
 const video = document.getElementById('myvideo');
 const startButton = document.getElementById('start-btn');
 const viewerLink = document.getElementById('viewer-link');
