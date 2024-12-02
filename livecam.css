@@ -1,0 +1,50 @@
+#myvideo {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    background: black;
+}
+button, input, .chat-area, .controls {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+.chat-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+}
+.chat-area {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.controls {
+    display: flex;
+    gap: 10px;
+}
+input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.emoji-picker, .present-btn {
+    cursor: pointer;
+}
