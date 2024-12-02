@@ -7,7 +7,14 @@ document.getElementById('start-btn').addEventListener('click', () => {
 
             // Gerar um link único para o espectador
             const viewerLink = window.location.href + "viewer?room=" + generateRoomID();
-            document.getElementById('viewer-link').value = viewerLink; // Exibe o link para os espectadores
+            
+            // Exibe o link para os espectadores e estiliza-o em azul
+            const viewerLinkInput = document.getElementById('viewer-link');
+            viewerLinkInput.value = viewerLink; // Define o valor do input com o link
+            
+            // Estiliza o link em azul
+            viewerLinkInput.style.color = "blue"; // Altera a cor do texto para azul
+            viewerLinkInput.style.border = "1px solid blue"; // Coloca uma borda azul
 
             // Envia o vídeo para os espectadores
             socket.emit('host-ready');
