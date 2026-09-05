@@ -39,11 +39,10 @@
     </script>
 </head>
 
-<body
-    class="h-full font-sans antialiased bg-black text-slate-100 flex items-center justify-center p-4 sm:p-6 overflow-x-hidden selection:bg-yellow-400 selection:text-black">
+<body class="h-full font-sans antialiased bg-black text-slate-100 flex items-center justify-center p-4 sm:p-6 overflow-x-hidden selection:bg-yellow-400 selection:text-black">
 
     <!-- ========================================= -->
-    <!-- MÚSICA DE FUNDO                           -->
+    <!-- MÚSICA -->
     <!-- ========================================= -->
 
     <audio id="background-music" preload="auto">
@@ -51,52 +50,25 @@
         Seu navegador não suporta áudio.
     </audio>
 
-    <script>
-        const music = document.getElementById("background-music");
+    <!-- BOTÃO DA MÚSICA -->
+    <button
+        id="music-btn"
+        type="button"
+        onclick="toggleMusic()"
+        aria-label="Tocar música"
+        class="fixed bottom-5 left-5 z-50 w-12 h-12 rounded-full
+               bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-500
+               text-black shadow-lg shadow-yellow-500/40
+               flex items-center justify-center
+               hover:scale-105 active:scale-95 transition-all">
 
-        // Volume da música
-        music.volume = 0.35;
+        <i id="music-icon" class="fa-solid fa-play"></i>
 
-        // Trecho que será reproduzido
-        const MUSIC_START = 10;
-        const MUSIC_END = 25;
-
-        function startMusic() {
-            if (music.paused) {
-                music.currentTime = MUSIC_START;
-
-                music.play().catch(function(error) {
-                    console.log("O navegador bloqueou o áudio:", error);
-                });
-            }
-        }
-
-        // Tenta iniciar automaticamente
-        window.addEventListener("load", function () {
-            music.currentTime = MUSIC_START;
-
-            music.play().catch(function () {
-                console.log("Autoplay bloqueado. Clique na página para iniciar.");
-            });
-        });
-
-        // Se o navegador bloquear o autoplay,
-        // o primeiro clique/toque inicia a música.
-        document.addEventListener("click", startMusic, { once: true });
-        document.addEventListener("touchstart", startMusic, { once: true });
-
-        // Para no segundo definido e volta para o início do trecho.
-        music.addEventListener("timeupdate", function () {
-            if (music.currentTime >= MUSIC_END) {
-                music.pause();
-                music.currentTime = MUSIC_START;
-            }
-        });
-    </script>
+    </button>
 
 
     <!-- ========================================= -->
-    <!-- EFEITOS DE FUNDO                          -->
+    <!-- EFEITOS DE FUNDO -->
     <!-- ========================================= -->
 
     <div class="absolute top-10 left-10 w-72 h-72 bg-purple-500 rounded-full
@@ -110,7 +82,7 @@
 
 
     <!-- ========================================= -->
-    <!-- LOGIN                                     -->
+    <!-- LOGIN -->
     <!-- ========================================= -->
 
     <div id="auth-container"
@@ -170,14 +142,13 @@
 
 
         <!-- ========================================= -->
-        <!-- FORMULÁRIO                                -->
+        <!-- FORMULÁRIO -->
         <!-- ========================================= -->
 
         <form id="auth-form"
               onsubmit="handleSubmit(event)"
               class="space-y-4"
               novalidate>
-
 
             <!-- Nome -->
             <div id="name-field-container"
@@ -278,7 +249,6 @@
                         id="password"
                         required
                         placeholder="••••••••"
-                        oninput="checkPasswordStrength(this.value)"
                         class="w-full pl-10 pr-12 py-3 bg-white/5
                                border border-white/10 rounded-xl
                                text-white placeholder-purple-300/50
@@ -339,17 +309,15 @@
 
 
             <!-- ========================================= -->
-            <!-- BOTÃO ENTRAR AMARELO GRADIENTE             -->
+            <!-- BOTÃO ENTRAR -->
             <!-- ========================================= -->
 
             <button
                 type="submit"
                 id="submit-btn"
                 class="w-full py-3.5 px-4
-                       bg-gradient-to-r
-                       from-yellow-300
-                       via-yellow-400
-                       to-amber-500
+                       bg-gradient-to-r from-yellow-300
+                       via-yellow-400 to-amber-500
                        hover:from-yellow-400
                        hover:via-yellow-500
                        hover:to-amber-600
@@ -442,7 +410,7 @@
 
 
     <!-- ========================================= -->
-    <!-- DASHBOARD                                 -->
+    <!-- DASHBOARD -->
     <!-- ========================================= -->
 
     <div id="dashboard-container"
@@ -525,7 +493,10 @@
     </div>
 
 
-    <!-- Toast -->
+    <!-- ========================================= -->
+    <!-- TOAST -->
+    <!-- ========================================= -->
+
     <div id="toast-container"
          class="fixed bottom-6 right-6 z-50
                 transform translate-y-20 opacity-0
@@ -550,7 +521,7 @@
 
 
     <!-- ========================================= -->
-    <!-- JAVASCRIPT                                -->
+    <!-- JAVASCRIPT -->
     <!-- ========================================= -->
 
     <script>
@@ -558,7 +529,143 @@
         let currentMode = "login";
 
 
-        // Trocar Login / Registro
+        /* =========================================
+           MÚSICA
+        ========================================= */
+
+        const music = document.getElementById("background-music");
+        const musicIcon = document.getElementById("music-icon");
+
+        // Volume
+        music.volume = 0.35;
+
+        // COMEÇA AQUI
+        const MUSIC_START = 10;
+
+        // TERMINA AQUI
+        const MUSIC_END = 25;
+
+
+        // Tocar música
+        function playMusic() {
+
+            if (music.currentTime < MUSIC_START ||
+                music.currentTime >= MUSIC_END) {
+
+                music.currentTime = MUSIC_START;
+            }
+
+            music.play()
+                .then(function() {
+
+                    musicIcon.className =
+                        "fa-solid fa-pause";
+
+                })
+                .catch(function(error) {
+
+                    console.log(
+                        "O navegador bloqueou o áudio:",
+                        error
+                    );
+
+                });
+        }
+
+
+        // Pausar música
+        function pauseMusic() {
+
+            music.pause();
+
+            musicIcon.className =
+                "fa-solid fa-play";
+        }
+
+
+        // Botão Play / Pause
+        function toggleMusic() {
+
+            if (music.paused) {
+
+                playMusic();
+
+            } else {
+
+                pauseMusic();
+
+            }
+        }
+
+
+        // Repetir o trecho
+        music.addEventListener("timeupdate", function() {
+
+            if (music.currentTime >= MUSIC_END) {
+
+                music.currentTime = MUSIC_START;
+
+                if (!music.paused) {
+
+                    music.play().catch(function() {
+
+                        musicIcon.className =
+                            "fa-solid fa-play";
+
+                    });
+
+                }
+
+            }
+
+        });
+
+
+        // Se chegar ao final do arquivo
+        music.addEventListener("ended", function() {
+
+            music.currentTime = MUSIC_START;
+
+            music.play().catch(function() {
+
+                musicIcon.className =
+                    "fa-solid fa-play";
+
+            });
+
+        });
+
+
+        // Quando a página carregar,
+        // tenta iniciar automaticamente.
+        window.addEventListener("load", function() {
+
+            music.currentTime = MUSIC_START;
+
+            music.play()
+                .then(function() {
+
+                    musicIcon.className =
+                        "fa-solid fa-pause";
+
+                })
+                .catch(function() {
+
+                    // No celular, normalmente cai aqui.
+                    // O usuário poderá tocar no botão amarelo.
+
+                    musicIcon.className =
+                        "fa-solid fa-play";
+
+                });
+
+        });
+
+
+        /* =========================================
+           TROCAR LOGIN / REGISTRO
+        ========================================= */
+
         function switchTab(mode) {
 
             currentMode = mode;
@@ -593,7 +700,8 @@
 
             if (mode === "login") {
 
-                indicator.style.transform = "translateX(0%)";
+                indicator.style.transform =
+                    "translateX(0%)";
 
                 btnLogin.className =
                     "relative z-10 py-2.5 text-sm font-semibold text-white";
@@ -615,7 +723,9 @@
                     "opacity-0"
                 );
 
-                extraOptions.classList.remove("hidden");
+                extraOptions.classList.remove(
+                    "hidden"
+                );
 
             } else {
 
@@ -637,18 +747,29 @@
                 btnText.innerText =
                     "Criar Conta";
 
-                nameContainer.classList.remove("hidden");
+                nameContainer.classList.remove(
+                    "hidden"
+                );
 
-                setTimeout(function () {
-                    nameContainer.classList.remove("opacity-0");
+                setTimeout(function() {
+
+                    nameContainer.classList.remove(
+                        "opacity-0"
+                    );
+
                 }, 10);
 
-                extraOptions.classList.add("hidden");
+                extraOptions.classList.add(
+                    "hidden"
+                );
             }
         }
 
 
-        // Mostrar / esconder senha
+        /* =========================================
+           SENHA
+        ========================================= */
+
         function togglePasswordVisibility() {
 
             const password =
@@ -656,6 +777,7 @@
 
             const icon =
                 document.getElementById("toggle-icon");
+
 
             if (password.type === "password") {
 
@@ -670,26 +792,33 @@
 
                 icon.className =
                     "fa-regular fa-eye";
-
             }
         }
 
 
-        // Envio do formulário
+        /* =========================================
+           FORMULÁRIO
+        ========================================= */
+
         function handleSubmit(event) {
 
             event.preventDefault();
 
             clearErrors();
 
+
             const email =
-                document.getElementById("email").value.trim();
+                document.getElementById("email")
+                .value.trim();
 
             const password =
-                document.getElementById("password").value;
+                document.getElementById("password")
+                .value;
 
             const fullname =
-                document.getElementById("fullname").value.trim();
+                document.getElementById("fullname")
+                .value.trim();
+
 
             let valid = true;
 
@@ -702,7 +831,6 @@
                 );
 
                 valid = false;
-
             }
 
 
@@ -723,11 +851,11 @@
                 );
 
                 valid = false;
-
             }
 
 
-            if (currentMode === "register" && !fullname) {
+            if (currentMode === "register" &&
+                !fullname) {
 
                 showError(
                     "name",
@@ -735,7 +863,6 @@
                 );
 
                 valid = false;
-
             }
 
 
@@ -745,16 +872,22 @@
             setLoading(true);
 
 
-            setTimeout(function () {
+            setTimeout(function() {
 
                 setLoading(false);
+
 
                 const name =
                     currentMode === "register"
                         ? fullname
                         : email.split("@")[0];
 
-                showDashboard(name, email);
+
+                showDashboard(
+                    name,
+                    email
+                );
+
 
                 showToast(
                     currentMode === "login"
@@ -762,22 +895,30 @@
                         : "Conta criada com sucesso!"
                 );
 
+
             }, 1200);
         }
 
 
-        // Mostrar erro
+        /* =========================================
+           ERROS
+        ========================================= */
+
         function showError(field, message) {
 
             const error =
-                document.getElementById(field + "-error");
+                document.getElementById(
+                    field + "-error"
+                );
+
 
             if (error) {
 
                 error.innerText = message;
 
-                error.classList.remove("hidden");
-
+                error.classList.remove(
+                    "hidden"
+                );
             }
 
 
@@ -788,6 +929,7 @@
                         : field
                 );
 
+
             if (input) {
 
                 input.classList.add(
@@ -795,95 +937,126 @@
                     "ring-1",
                     "ring-pink-500"
                 );
-
             }
         }
 
 
-        // Limpar erros
         function clearErrors() {
 
-            ["email", "password", "name"].forEach(function(field) {
+            ["email", "password", "name"]
+                .forEach(function(field) {
 
-                const error =
-                    document.getElementById(
-                        field + "-error"
-                    );
+                    const error =
+                        document.getElementById(
+                            field + "-error"
+                        );
 
-                if (error) {
-                    error.classList.add("hidden");
-                }
+                    if (error) {
+
+                        error.classList.add(
+                            "hidden"
+                        );
+                    }
 
 
-                const input =
-                    document.getElementById(
-                        field === "name"
-                            ? "fullname"
-                            : field
-                    );
+                    const input =
+                        document.getElementById(
+                            field === "name"
+                                ? "fullname"
+                                : field
+                        );
 
-                if (input) {
 
-                    input.classList.remove(
-                        "border-pink-500",
-                        "ring-1",
-                        "ring-pink-500"
-                    );
+                    if (input) {
 
-                }
+                        input.classList.remove(
+                            "border-pink-500",
+                            "ring-1",
+                            "ring-pink-500"
+                        );
+                    }
 
-            });
+                });
         }
 
 
-        // Loading do botão
+        /* =========================================
+           LOADING
+        ========================================= */
+
         function setLoading(isLoading) {
 
             const btn =
-                document.getElementById("submit-btn");
+                document.getElementById(
+                    "submit-btn"
+                );
 
             const text =
-                document.getElementById("btn-text");
+                document.getElementById(
+                    "btn-text"
+                );
 
             const icon =
-                document.getElementById("btn-icon");
+                document.getElementById(
+                    "btn-icon"
+                );
 
             const spinner =
-                document.getElementById("btn-spinner");
+                document.getElementById(
+                    "btn-spinner"
+                );
 
 
             if (isLoading) {
 
                 btn.disabled = true;
 
-                text.classList.add("hidden");
+                text.classList.add(
+                    "hidden"
+                );
 
-                icon.classList.add("hidden");
+                icon.classList.add(
+                    "hidden"
+                );
 
-                spinner.classList.remove("hidden");
+                spinner.classList.remove(
+                    "hidden"
+                );
 
             } else {
 
                 btn.disabled = false;
 
-                text.classList.remove("hidden");
+                text.classList.remove(
+                    "hidden"
+                );
 
-                icon.classList.remove("hidden");
+                icon.classList.remove(
+                    "hidden"
+                );
 
-                spinner.classList.add("hidden");
-
+                spinner.classList.add(
+                    "hidden"
+                );
             }
         }
 
 
-        // Dashboard
+        /* =========================================
+           DASHBOARD
+        ========================================= */
+
         function showDashboard(name, email) {
 
             const auth =
-                document.getElementById("auth-container");
+                document.getElementById(
+                    "auth-container"
+                );
 
             const dashboard =
-                document.getElementById("dashboard-container");
+                document.getElementById(
+                    "dashboard-container"
+                );
 
 
             auth.classList.add(
@@ -895,13 +1068,19 @@
 
             setTimeout(function() {
 
-                auth.classList.add("hidden");
+                auth.classList.add(
+                    "hidden"
+                );
 
-                dashboard.classList.remove("hidden");
+                dashboard.classList.remove(
+                    "hidden"
+                );
+
 
                 document.getElementById(
                     "dashboard-username"
                 ).innerText = name;
+
 
                 document.getElementById(
                     "dashboard-email"
@@ -921,18 +1100,26 @@
                     "user-avatar"
                 ).innerText = initials;
 
+
             }, 300);
         }
 
 
-        // Logout
+        /* =========================================
+           LOGOUT
+        ========================================= */
+
         function logout() {
 
             const auth =
-                document.getElementById("auth-container");
+                document.getElementById(
+                    "auth-container"
+                );
 
             const dashboard =
-                document.getElementById("dashboard-container");
+                document.getElementById(
+                    "dashboard-container"
+                );
 
 
             dashboard.classList.add(
@@ -943,7 +1130,10 @@
 
             setTimeout(function() {
 
-                dashboard.classList.add("hidden");
+                dashboard.classList.add(
+                    "hidden"
+                );
+
 
                 auth.classList.remove(
                     "hidden",
@@ -952,48 +1142,71 @@
                     "pointer-events-none"
                 );
 
+
                 document.getElementById(
                     "auth-form"
                 ).reset();
 
+
                 switchTab("login");
+
 
             }, 300);
 
 
-            showToast("Você saiu da conta.");
+            showToast(
+                "Você saiu da conta."
+            );
         }
 
 
-        // Login social
+        /* =========================================
+           LOGIN SOCIAL
+        ========================================= */
+
         function socialLogin(provider) {
 
             setLoading(true);
+
 
             setTimeout(function() {
 
                 setLoading(false);
 
+
                 showDashboard(
                     provider + " User",
-                    "user@" + provider.toLowerCase() + ".com"
+                    "user@" +
+                    provider.toLowerCase() +
+                    ".com"
                 );
 
+
                 showToast(
-                    "Conectado com " + provider + "!"
+                    "Conectado com " +
+                    provider +
+                    "!"
                 );
+
 
             }, 1000);
         }
 
 
-        // Esqueci senha
+        /* =========================================
+           ESQUECI A SENHA
+        ========================================= */
+
         function showForgotPassword(event) {
 
             event.preventDefault();
 
+
             const email =
-                document.getElementById("email").value.trim();
+                document.getElementById(
+                    "email"
+                ).value.trim();
+
 
             if (!email) {
 
@@ -1005,13 +1218,18 @@
                 return;
             }
 
+
             showToast(
-                "Link de recuperação enviado para " + email
+                "Link de recuperação enviado para " +
+                email
             );
         }
 
 
-        // Toast
+        /* =========================================
+           TOAST
+        ========================================= */
+
         function showToast(message) {
 
             const container =
