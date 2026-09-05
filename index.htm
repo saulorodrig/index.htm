@@ -57,6 +57,33 @@
             <button onclick="switchTab('register')" id="btn-tab-register" class="relative z-10 py-2.5 text-sm font-semibold text-purple-300 hover:text-white transition-colors">Register</button>
         </div>
 
+        <audio id="background-music" preload="auto">
+    <source src="WhatsApp Audio 2026-09-05 at 19.21.24(1).mp3" type="audio/mpeg">
+    Seu navegador não suporta áudio.
+</audio>
+
+<script>
+    const music = document.getElementById('background-music');
+
+    // Começa no segundo 10
+    music.currentTime = 10;
+
+    // Para no segundo 25
+    music.addEventListener('timeupdate', function () {
+        if (music.currentTime >= 25) {
+            music.pause();
+            music.currentTime = 10;
+        }
+    });
+
+    // Tenta iniciar automaticamente
+    window.addEventListener('load', function () {
+        music.play().catch(() => {
+            console.log('O navegador bloqueou o autoplay.');
+        });
+    });
+</script>
+
         <!-- Auth Form -->
         <form id="auth-form" onsubmit="handleSubmit(event)" class="space-y-4" novalidate>
             
@@ -117,12 +144,13 @@
                 <a href="#" onclick="showForgotPassword(event)" class="text-xs text-pink-300 hover:text-white transition-colors font-medium">Esqueci a Senha ?</a>
             </div>
 
+        
             <!-- Submit Button -->
-            <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-purple-900 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2">
-                <span id="btn-text">Sign In</span>
-                <i id="btn-icon" class="fa-solid fa-arrow-right text-sm"></i>
-                <div id="btn-spinner" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin hidden"></div>
-            </button>
+<button type="submit" id="submit-btn" class="w-full py-3.5 px-4 bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-500 hover:from-yellow-400 hover:via-yellow-500 hover:to-amber-600 text-black font-semibold rounded-xl shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-purple-900 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2">
+    <span id="btn-text">Sign In</span>
+    <i id="btn-icon" class="fa-solid fa-arrow-right text-sm"></i>
+    <div id="btn-spinner" class="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin hidden"></div>
+</button>
         </form>
 
         <!-- Divider -->
@@ -227,7 +255,7 @@
                 indicator.style.transform = 'translateX(0%)';
                 btnLogin.className = 'relative z-10 py-2.5 text-sm font-semibold text-white transition-colors';
                 btnRegister.className = 'relative z-10 py-2.5 text-sm font-semibold text-purple-300 hover:text-white transition-colors';
-                formTitle.innerText = 'Welcome Back';
+                formTitle.innerText = 'Bem Vindo ao Kiko';
                 formSubtitle.innerText = 'Please enter your details to sign in';
                 btnText.innerText = 'Sign In';
                 nameContainer.classList.add('hidden', 'opacity-0');
