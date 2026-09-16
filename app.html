@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KAS — Creator Network</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="app-page">
+  <aside class="sidebar">
+    <div class="brand">
+      <b>▥ kas</b>
+      <small>creator network</small>
+    </div>
+
+    <nav>
+      <button class="selected">⌂ Descobrir</button>
+      <button>⌁ Ao vivo</button>
+      <button>♧ Comunidades</button>
+      <button>▥ Meu estúdio</button>
+      <button>◈ Carteira</button>
+    </nav>
+  </aside>
+
+  <main class="dashboard">
+    <header>
+      <span>
+        kas <b>Descobrir</b>
+      </span>
+
+      <div class="top-actions">
+        <input placeholder="Buscar criadores, temas...">
+
+        <button id="logout">
+          ↪ Sair
+        </button>
+      </div>
+    </header>
+
+    <section class="content">
+      <small class="eyebrow">DESCOBERTA / 01</small>
+
+      <h1>Descobrir</h1>
+
+      <p>
+        Olá, <strong id="userName">criador</strong>.
+        Uma curadoria viva do que está acontecendo agora.
+      </p>
+
+      <div class="chips">
+        <button class="selected">Tudo</button>
+        <button>Música</button>
+        <button>Arte & cultura</button>
+        <button>Games</button>
+        <button>Lifestyle</button>
+      </div>
+
+      <div class="grid">
+        <article class="hero">
+          <span class="live">
+            ● AGORA NA SUA ÓRBITA
+          </span>
+
+          <div class="hero-copy">
+            <small>@lunakyo · Seguir</small>
+
+            <h2>Midnight bloom</h2>
+
+            <p>
+              Um minuto para desacelerar e deixar a noite falar.
+              #visual #mood
+            </p>
+          </div>
+
+          <div class="actions">
+            <button>
+              ♡
+              <small>18,4 mil</small>
+            </button>
+
+            <button>
+              ◌
+              <small>1,2k</small>
+            </button>
+
+            <button>
+              ♧
+              <small>Apoiar</small>
+            </button>
+
+            <button>
+              ➤
+              <small>Enviar</small>
+            </button>
+          </div>
+        </article>
+
+        <aside class="panel">
+          <small class="eyebrow">SEU ESPAÇO</small>
+
+          <h2 id="welcome">
+            Tudo pronto
+          </h2>
+
+          <p>
+            Seu perfil está conectado ao Supabase.
+            Esta página só pode ser vista enquanto sua sessão
+            estiver ativa.
+          </p>
+
+          <div class="stats">
+            <div>
+              <b>0</b>
+              <small>apoios</small>
+            </div>
+
+            <div>
+              <b>0</b>
+              <small>seguindo</small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
