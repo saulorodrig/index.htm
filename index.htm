@@ -1,57 +1,100 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import { trpc } from "@/lib/trpc";
-import { Eye, EyeOff, Zap, ArrowRight, Loader2 } from "lucide-react";
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bem-vindo ao KAS</title>
 
-export default function Home() {
-  const [, navigate] = useLocation();
-  const me = trpc.auth.me.useQuery();
-  const register = trpc.auth.register.useMutation({ onSuccess: () => navigate("/app") });
-  const login = trpc.auth.login.useMutation({ onSuccess: () => navigate("/app") });
-  const [mode, setMode] = useState<"register" | "login">("register");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
-  useEffect(() => { if (me.data) navigate("/app"); }, [me.data, navigate]);
+<body class="auth-page">
+  <main class="auth-layout">
+    <section class="intro">
+      <small>KAS / CREATOR NETWORK</small>
 
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    if (mode === "register") register.mutate({ name, email, password });
-    else login.mutate({ email, password });
-  }
+      <h1>Seu tempo tem valor.</h1>
 
-  const error = register.error?.message ?? login.error?.message;
-  const pending = register.isPending || login.isPending;
+      <p>
+        Entre em uma rede viva para descobrir criadores,
+        apoiar ideias e transformar presença em comunidade.
+      </p>
+    </section>
 
-  return (
-    <main className="min-h-screen overflow-hidden bg-[#080d0a] text-[#eaf3e6] selection:bg-[#d9ff63] selection:text-[#17210e]">
-      <div className="pointer-events-none fixed -left-24 -top-24 h-80 w-80 rounded-full bg-[#7359d9]/25 blur-3xl" />
-      <div className="pointer-events-none fixed -bottom-32 -right-20 h-96 w-96 rounded-full bg-[#d9ff63]/10 blur-3xl" />
-      <div className="relative mx-auto grid min-h-screen w-full max-w-6xl items-center gap-10 px-5 py-10 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
-        <section className="hidden lg:block">
-          <p className="mb-6 text-xs uppercase tracking-[.25em] text-[#9eb46e]">KAS / creator network</p>
-          <h1 className="max-w-xl text-7xl font-semibold leading-[.9] tracking-[-.08em]">Seu tempo tem valor.</h1>
-          <p className="mt-8 max-w-md text-lg leading-relaxed text-[#91a092]">Entre em uma rede viva para descobrir criadores, apoiar ideias e transformar presença em comunidade.</p>
-          <div className="mt-12 flex gap-3 text-sm text-[#bdc9ba]"><span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Descubra</span><span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Apoie</span><span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Crie</span></div>
-        </section>
-        <section className="mx-auto w-full max-w-md rounded-[28px] border border-white/10 bg-white/[.06] p-6 shadow-2xl backdrop-blur-xl sm:p-8">
-          <div className="mb-8 text-center"><div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-[#d9ff63] text-[#17210e] shadow-lg shadow-[#d9ff63]/20"><Zap size={25} fill="currentColor" /></div><h2 className="text-3xl font-semibold tracking-tight">Bem-vindo ao KAS</h2><p className="mt-2 text-sm text-[#91a092]">{mode === "register" ? "Crie seu acesso para continuar." : "Entre com o cadastro que você criou."}</p></div>
-          <div className="mb-6 grid grid-cols-2 rounded-xl bg-black/20 p-1"><button type="button" onClick={() => { register.reset(); login.reset(); setMode("register"); }} className={`rounded-lg py-2 text-sm font-semibold transition ${mode === "register" ? "bg-white/10 text-[#d9ff63]" : "text-[#91a092]"}`}>Cadastrar</button><button type="button" onClick={() => { register.reset(); login.reset(); setMode("login"); }} className={`rounded-lg py-2 text-sm font-semibold transition ${mode === "login" ? "bg-white/10 text-[#d9ff63]" : "text-[#91a092]"}`}>Entrar</button></div>
-          <form onSubmit={submit} className="space-y-4">
-            {mode === "register" && <label className="block text-sm text-[#bdc9ba]">Nome completo<input value={name} onChange={e => setName(e.target.value)} required minLength={2} className="mt-2 w-full rounded-xl border border-white/10 bg-white/[.05] px-4 py-3 text-white outline-none transition focus:border-[#d9ff63]/60" placeholder="Seu nome" /></label>}
-            <label className="block text-sm text-[#bdc9ba]">E-mail<input value={email} onChange={e => setEmail(e.target.value)} required type="email" className="mt-2 w-full rounded-xl border border-white/10 bg-white/[.05] px-4 py-3 text-white outline-none transition focus:border-[#d9ff63]/60" placeholder="voce@exemplo.com" /></label>
-            <label className="block text-sm text-[#bdc9ba]">Senha<div className="relative mt-2"><input value={password} onChange={e => setPassword(e.target.value)} required minLength={mode === "register" ? 8 : 1} type={showPassword ? "text" : "password"} className="w-full rounded-xl border border-white/10 bg-white/[.05] px-4 py-3 pr-12 text-white outline-none transition focus:border-[#d9ff63]/60" placeholder="Mínimo de 8 caracteres" /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#91a092]">{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></label>
-            {error && <p className="rounded-lg border border-[#ff98b4]/30 bg-[#ff98b4]/10 px-3 py-2 text-sm text-[#ff98b4]">{error}</p>}
-            <button disabled={pending} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d9ff63] px-4 py-3.5 font-bold text-[#17210e] transition hover:bg-[#e5ff8e] disabled:opacity-60">{pending ? <Loader2 className="animate-spin" size={18} /> : <>{mode === "register" ? "Criar minha conta" : "Entrar no KAS"}<ArrowRight size={18} /></>}</button>
-          </form>
-          <p className="mt-6 text-center text-xs leading-relaxed text-[#718071]">Ao continuar, seus dados ficam protegidos e armazenados com segurança para permitir seu próximo acesso.</p>
-        </section>
+    <section class="auth-card">
+      <div class="logo">⚡</div>
+
+      <h2>Bem-vindo ao KAS</h2>
+
+      <p class="subtitle" id="subtitle">
+        Crie seu acesso para continuar.
+      </p>
+
+      <div class="tabs">
+        <button id="registerTab" class="active">
+          Cadastrar
+        </button>
+
+        <button id="loginTab">
+          Entrar
+        </button>
       </div>
-    </main>
-  );
-}
 
+      <form id="authForm">
+        <label id="nameWrap">
+          Nome completo
+
+          <input
+            id="name"
+            minlength="2"
+            autocomplete="name"
+            placeholder="Seu nome"
+          >
+        </label>
+
+        <label>
+          E-mail
+
+          <input
+            id="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="voce@exemplo.com"
+          >
+        </label>
+
+        <label>
+          Senha
+
+          <input
+            id="password"
+            type="password"
+            required
+            minlength="8"
+            autocomplete="new-password"
+            placeholder="Mínimo de 8 caracteres"
+          >
+        </label>
+
+        <p id="message" class="message"></p>
+
+        <button id="submit" class="primary" type="submit">
+          Criar minha conta →
+        </button>
+      </form>
+
+      <p class="foot">
+        Sua senha é protegida pelo Supabase. O acesso só é liberado
+        após a confirmação do e-mail.
+      </p>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
 
 
