@@ -1,13 +1,133 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import { supabase } from "@/lib/supabase";
-import { LogOut, Search, Heart, MessageCircle, Send, Gift, Zap } from "lucide-react";
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KAS — Creator Network</title>
 
-const navItems = ["Descobrir", "Ao vivo", "Comunidades", "Meu estúdio", "Carteira"];
-export default function CreatorNetwork() {
-  const [, navigate] = useLocation(); const [loading, setLoading] = useState(true); const [userName, setUserName] = useState("criador"); const [active, setActive] = useState("Descobrir");
-  useEffect(() => { let mounted = true; supabase.auth.getSession().then(async ({ data }) => { if (!data.session) { navigate("/"); return; } const { data: profile } = await supabase.from("profiles").select("name").eq("id", data.session.user.id).maybeSingle(); if (mounted) { setUserName(profile?.name || data.session.user.user_metadata?.name || "criador"); setLoading(false); } }); return () => { mounted = false; }; }, [navigate]);
-  async function logout() { await supabase.auth.signOut(); navigate("/"); }
-  if (loading) return <div className="grid min-h-screen place-items-center bg-[#080d0a] text-[#d9ff63]">Carregando seu espaço…</div>;
-  return <div className="min-h-screen bg-[#080d0a] text-[#eaf3e6]"><div className="grid min-h-screen lg:grid-cols-[248px_1fr]"><aside className="hidden border-r border-white/10 bg-[#0a120c]/90 p-5 lg:flex lg:flex-col"><div className="mb-14 flex items-center gap-3 px-2"><div className="grid h-8 w-8 place-items-center rounded-xl bg-[#d9ff63] font-black text-[#17210e]">▥</div><div><strong className="text-2xl tracking-[-.08em]">kas</strong><small className="block text-[8px] uppercase tracking-[.16em] text-[#718071]">creator network</small></div></div><p className="px-2 text-[10px] uppercase tracking-[.16em] text-[#6f806f]">espaço</p><nav className="mt-3 grid gap-2">{navItems.map(item => <button key={item} onClick={() => setActive(item)} className={`rounded-xl border px-3 py-3 text-left text-sm transition ${active === item ? "border-[#d9ff63]/30 bg-[#d9ff63]/10 text-[#d9ff63]" : "border-transparent text-[#93a294] hover:text-[#d9ff63]"}`}>{item}</button>)}</nav><div className="mt-auto rounded-2xl border border-[#b9a7ff]/20 bg-gradient-to-br from-[#b9a7ff]/10 to-[#d9ff63]/5 p-4"><span className="text-[10px] uppercase tracking-[.18em] text-[#9eb46e]">sinal KAS</span><b className="mt-3 block text-lg">Seu tempo tem valor.</b><p className="mt-1 text-xs leading-relaxed text-[#91a092]">Reconheça quem cria algo que fica.</p></div></aside><main className="min-w-0"><header className="flex h-[74px] items-center gap-4 border-b border-white/10 px-4 sm:px-8"><div className="text-xs text-[#768578]">kas <strong className="ml-2 text-[#eaf3e6]">{active}</strong></div><label className="ml-auto flex w-[min(330px,42vw)] items-center gap-2 rounded-xl border border-white/10 bg-white/[.035] px-3 py-2.5 text-[#91a092]"><Search size={16} /><input className="w-full bg-transparent text-sm text-white outline-none" placeholder="Buscar criadores, temas…" /></label><button onClick={logout} className="flex items-center gap-2 rounded-xl border border-[#d9ff63]/35 px-3 py-2 text-sm font-semibold text-[#d9ff63] transition hover:bg-[#d9ff63]/10"><LogOut size={15} /> Sair</button></header><section className="mx-auto max-w-6xl px-4 py-8 sm:px-8"><div className="mb-7 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><span className="text-[10px] uppercase tracking-[.18em] text-[#9eb46e]">descoberta / 01</span><h1 className="mt-2 text-5xl font-semibold tracking-[-.09em] sm:text-7xl">Descobrir</h1><p className="mt-3 max-w-lg text-sm leading-relaxed text-[#91a092]">Olá, {userName}. Uma curadoria viva do que está acontecendo agora.</p></div><button className="rounded-xl bg-[#d9ff63] px-4 py-3 text-sm font-bold text-[#17210e]">Afinar meu feed</button></div><div className="mb-5 flex gap-2 overflow-auto">{["Tudo", "Música", "Arte & cultura", "Games", "Lifestyle", "#visual"].map((tag, i) => <button key={tag} className={`whitespace-nowrap rounded-full border px-3 py-2 text-xs ${i === 0 ? "border-[#d9ff63]/40 bg-[#d9ff63]/10 text-[#d9ff63]" : "border-white/10 text-[#91a092]"}`}>{tag}</button>)}</div><div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]"><article className="relative min-h-[560px] overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_48%_34%,rgba(217,255,99,.42),transparent_20%),radial-gradient(circle_at_80%_22%,rgba(255,112,160,.5),transparent_24%),linear-gradient(135deg,#34472c,#9d4c45_46%,#1b2721)] p-6"><div className="absolute inset-x-5 top-5 flex justify-between text-[10px]"><span className="rounded-lg bg-black/40 px-3 py-2"><i className="mr-2 inline-block h-2 w-2 rounded-full bg-[#d9ff63]" />AGORA NA SUA ÓRBITA</span><span className="rounded-lg bg-black/40 px-3 py-2">01 / 03</span></div><div className="absolute bottom-6 left-6 right-20"><div className="flex items-center gap-2 text-xs"><div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#d9ff63] to-[#8d6bff]" /><strong>@lunakyo</strong><button className="rounded-lg border border-[#d9ff63]/45 bg-[#d9ff63]/10 px-2 py-1 text-[10px] text-[#d9ff63]">Seguir</button></div><h2 className="mt-4 text-4xl font-semibold tracking-[-.07em]">Midnight bloom</h2><p className="mt-2 text-xs text-[#bdc9ba]">Um minuto para desacelerar e deixar a noite falar. #visual #mood</p><p className="mt-4 text-[10px] text-[#9ca99b]">◉ 128,4 mil views · som original</p></div><div className="absolute bottom-6 right-5 grid gap-4">{[[Heart,"18,4 mil"],[MessageCircle,"1,2k"],[Gift,"Apoiar"],[Send,"Enviar"]].map(([Icon, label]) => { const C = Icon as typeof Heart; return <button key={String(label)} className="text-center text-xs"><span className="grid h-10 w-10 place-items-center rounded-full border border-white/25 bg-black/30"><C size={19} /></span><small className="mt-1 block text-[9px] text-[#cfdbcc]">{String(label)}</small></button>})}</div></article><aside className="grid content-start gap-3"><div className="rounded-2xl border border-white/10 bg-white/[.035] p-5"><span className="text-[10px] uppercase tracking-[.18em] text-[#9eb46e]">seu espaço</span><h3 className="mt-2 text-xl tracking-[-.05em]">Tudo pronto, {userName.split(" ")[0]}</h3><p className="mt-2 text-xs leading-relaxed text-[#91a092]">Seu perfil está conectado ao Supabase e esta página só pode ser vista durante sua sessão.</p><div className="mt-5 grid grid-cols-2 gap-2"><div className="rounded-xl bg-white/[.05] p-3"><b className="block text-lg">0</b><small className="text-[9px] text-[#7e8c7f]">apoios</small></div><div className="rounded-xl bg-white/[.05] p-3"><b className="block text-lg">0</b><small className="text-[9px] text-[#7e8c7f]">seguindo</small></div></div></div><div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#2f344e]/70 to-[#b9a7ff]/10 p-5"><span className="text-[10px] uppercase tracking-[.18em] text-[#9eb46e]">comece agora</span><h3 className="mt-2 text-xl tracking-[-.05em]">Encontre sua órbita</h3><p className="mt-2 text-xs leading-relaxed text-[#91a092]">Explore criadores e participe das comunidades que combinam com você.</p><button className="mt-4 flex items-center gap-2 rounded-xl bg-[#d9ff63] px-3 py-2 text-xs font-bold text-[#17210e]"><Zap size={14} /> Explorar</button></div></aside></div></section></main></div></div>;
-}
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="app-page">
+  <aside class="sidebar">
+    <div class="brand">
+      <b>▥ kas</b>
+      <small>creator network</small>
+    </div>
+
+    <nav>
+      <button class="selected">⌂ Descobrir</button>
+      <button>⌁ Ao vivo</button>
+      <button>♧ Comunidades</button>
+      <button>▥ Meu estúdio</button>
+      <button>◈ Carteira</button>
+    </nav>
+  </aside>
+
+  <main class="dashboard">
+    <header>
+      <span>
+        kas <b>Descobrir</b>
+      </span>
+
+      <div class="top-actions">
+        <input placeholder="Buscar criadores, temas...">
+
+        <button id="logout">
+          ↪ Sair
+        </button>
+      </div>
+    </header>
+
+    <section class="content">
+      <small class="eyebrow">DESCOBERTA / 01</small>
+
+      <h1>Descobrir</h1>
+
+      <p>
+        Olá, <strong id="userName">criador</strong>.
+        Uma curadoria viva do que está acontecendo agora.
+      </p>
+
+      <div class="chips">
+        <button class="selected">Tudo</button>
+        <button>Música</button>
+        <button>Arte & cultura</button>
+        <button>Games</button>
+        <button>Lifestyle</button>
+      </div>
+
+      <div class="grid">
+        <article class="hero">
+          <span class="live">
+            ● AGORA NA SUA ÓRBITA
+          </span>
+
+          <div class="hero-copy">
+            <small>@lunakyo · Seguir</small>
+
+            <h2>Midnight bloom</h2>
+
+            <p>
+              Um minuto para desacelerar e deixar a noite falar.
+              #visual #mood
+            </p>
+          </div>
+
+          <div class="actions">
+            <button>
+              ♡
+              <small>18,4 mil</small>
+            </button>
+
+            <button>
+              ◌
+              <small>1,2k</small>
+            </button>
+
+            <button>
+              ♧
+              <small>Apoiar</small>
+            </button>
+
+            <button>
+              ➤
+              <small>Enviar</small>
+            </button>
+          </div>
+        </article>
+
+        <aside class="panel">
+          <small class="eyebrow">SEU ESPAÇO</small>
+
+          <h2 id="welcome">
+            Tudo pronto
+          </h2>
+
+          <p>
+            Seu perfil está conectado ao Supabase.
+            Esta página só pode ser vista enquanto sua sessão
+            estiver ativa.
+          </p>
+
+          <div class="stats">
+            <div>
+              <b>0</b>
+              <small>apoios</small>
+            </div>
+
+            <div>
+              <b>0</b>
+              <small>seguindo</small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
